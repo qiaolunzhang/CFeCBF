@@ -18,7 +18,6 @@ from Data_manager.DataSplitter_k_fold import DataSplitter_Warm_k_fold
 import numpy as np
 import os
 from datetime import datetime
-from SLIM_BPR.Cython.SLIM_BPR_Cython import SLIM_BPR_Cython
 import scipy.sparse as sps
 
 
