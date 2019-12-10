@@ -11,8 +11,8 @@ from FeatureWeighting.Cython.CFW_D_Similarity_Cython import CFW_D_Similarity_Cyt
 
 from Base.Evaluation.Evaluator import EvaluatorHoldout
 
-from Data_manager.Movielens_20m.Movielens20MReader import Movielens20MReader
-from Data_manager.DataSplitter_k_fold import DataSplitter_Warm_k_fold
+from Notebooks_utils.data_splitter import train_test_holdout
+
 
 
 import numpy as np
@@ -161,27 +161,18 @@ ICM_sub_class = "data/data_ICM_sub_class.csv"
 ICM_sub_class_file = open(ICM_sub_class, 'r')
 
 
-ICM_all, n_items, n_features = get_ICM(ICM_sub_class, URM_all)
+ICM, n_items, n_features = get_ICM(ICM_sub_class, URM_all)
 print("Number of items is ", str(n_items))
 print("n_features is ", str(n_features))
 
 
 
 
-# Selecting a dataset
-dataReader = Movielens20MReader()
-
-# Splitting the dataset. This split will produce a warm item split
-# To replicate the original experimens use the dataset accessible here with a cold item split:
-# https://mmprj.github.io/mtrm_dataset/index
-dataSplitter = DataSplitter_Warm_k_fold(dataReader)
-dataSplitter.load_data()
+URM_train, URM_test = train_test_holdout(URM_all, train_perc = 0.8)
+URM_train, URM_validation = train_test_holdout(URM_train, train_perc = 0.9)
 
 # Each URM is a scipy.sparse matrix of shape |users|x|items|
-URM_train, URM_validation, URM_test = dataSplitter.get_holdout_split()
 
-# The ICM is a scipy.sparse matrix of shape |items|x|features|
-ICM = dataSplitter.get_ICM_from_name("ICM_genre")
 
 # This contains the items to be ignored during the evaluation step
 # In a cold items setting this should contain the indices of the warm items
